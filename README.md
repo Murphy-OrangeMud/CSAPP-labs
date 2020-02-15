@@ -1,10 +1,8 @@
 # CSAPP-labs
-ICS课程中所有的lab，没有proxy lab。
-除了proxy lab之外剩下的七个lab分别是：
+ICS课程中所有的lab，没有proxy lab，bomb lab和attack lab。
+剩下的五个lab分别是：
 data lab，
-bomb lab，
 arch lab，
 cache lab，
-attack lab，
 malloc lab，
 shell lab。
