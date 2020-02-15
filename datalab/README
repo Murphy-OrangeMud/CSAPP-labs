@@ -1,0 +1,96 @@
+**********************
+The CS:APP Data Lab
+Directions to Students
+**********************
+
+Your goal is to modify your copy of bits.c so that it passes all the
+tests in the driver program (driver.pl) with full credit.
+
+***************************
+1. Testing your bits.c file
+***************************
+
+We've provided you with a number of tools to test the puzzle solutions
+in your bits.c file. See the lab writeup for details on how to use
+them.
+
+BDD checker: The BDD checker is a program that performs an exhaustive
+check of the correctness of your puzzle solutions. Use the BDD checker to
+do the authoritative correctness test. If the BDD checker finds an
+error, it will provide you with the argument value(s) that gave the
+wrong answer.
+
+dlc compiler: Each puzzle in bits.c has a coding guideline that
+specifies a limited set of legal operators that you are allowed to
+use, and a maximum number of operators.  The dlc (Data Lab
+Compiler) tool is a C front-end that checks each puzzle solution for
+adherence to the coding guidelines.
+
+driver.pl: This is a driver program that invokes the BDD checker and
+dlc to check your solutions in bits.c for correctness and adherence to
+the programming guidelines. It also displays your total correctness
+score, including points for correctness (awarded to correct functions
+that use only legal operators) and performance (awarded to correct
+functions that use less than the maximum number of operators).	This is
+the identical program that Autolab uses when it autogrades your
+submissions.
+
+******************
+2. Helper programs
+******************
+
+We have included the ishow and fshow programs to help you decipher
+integer and double-precision floating point representations respectively. Each takes multiple
+decimal or hex numbers as arguments. To build them type:
+
+    unix> make
+
+Example usages:
+
+    unix> ./ishow 0x27
+    Hex = 0x00000027,	Signed = 39,	Unsigned = 39
+
+    unix> ./ishow 0x27 27
+    Hex = 0x00000027,	Signed = 39,	Unsigned = 39
+    Hex = 0x0000001b,	Signed = 27,	Unsigned = 27
+
+    unix> ./fshow 0x15213243
+    Double Precision Floating point value 1.751448342e-315
+    Bit Representation 0x15213243, sign = 0, exponent = 0x00, fraction = 0x15213243
+    Denormalized.  +0.0000000787 X 2^(-1022)
+
+    linux> ./fshow 0x15213243 15213243
+    Double Precision Floating point value 1.751448342e-315
+    Bit Representation 0x15213243, sign = 0, exponent = 0x00, fraction = 0x15213243
+    Denormalized.  +0.0000000787 X 2^(-1022)
+
+    Double Precision Floating point value 7.516340728e-317
+    Bit Representation 0x00e822bb, sign = 0, exponent = 0x00, fraction = 0xe822bb
+    Denormalized.  +0.0000000034 X 2^(-1022)
+
+*********
+3. Files:
+*********
+
+Makefile	- Compiles fshow, and ishow
+README		- This file
+
+bits.c		- The file you will be modifying and handing in
+bits.h		- Header file
+
+bddcheck/	- Directory containing the BDD checker
+
+btest.c		- Deprecated file, leave this alone
+btest.h 	- Deprecated file, leave this alone
+decl.c  	- Deprecated file, leave this alone
+tests.c     - Deprecated file, leave this alone
+
+dlc*		- Rule checking compiler binary (data lab compiler)	 
+
+driver.pl*	- Driver program that uses the bdd checker and dlc to autograde bits.c
+  Driverhdrs.pm - Driver config file
+  Driverlib.pm	- Driver library file
+
+fshow.c		- Helper for examining double precision floating-point representations
+ishow.c		- Helper for examining integer representations
+
