@@ -1,0 +1,54 @@
+#1800017781 1800017781 Vegetable	
+	.pos 0
+	irmovq stack, %rsp
+	call main
+	halt
+
+	.align 8
+Array:
+	.quad 0xbca
+	.quad 0xcba
+	.quad 0xacb
+	.quad 0xcab
+	.quad 0xabc
+	.quad 0xbac
+
+main:
+	irmovq Array, %rdi
+	irmovq $6, %rsi
+	call bubble_sort
+	ret
+
+bubble_sort:
+	irmovq $1, %r8		#save the constants
+	irmovq $8, %r9
+	rrmovq %rsi, %rax	#last = count
+	jmp test1
+loop1:
+	rrmovq %rdi, %rcx	#i=data
+	xorq %rdx, %rdx		
+	subq %r8, %rdx		
+	subq %r9, %rcx		#i=data-1
+	#jmp test2
+loop2:
+	mrmovq (%rcx), %r10	#*(i)
+	mrmovq 8(%rcx), %r11	#*(i+1)
+	rrmovq %r10, %r12
+	subq %r11, %r12		#if *(i+1) >= *(i), jmp test2
+	jle test2
+	rmmovq %r10, 8(%rcx)
+	rmmovq %r11, (%rcx)
+test2:
+	addq %r8, %rdx
+	addq %r9, %rcx		#i++
+	rrmovq %rdx, %rbx	#while i < last
+	xorq %rsi, %rbx
+	jne loop2
+test1:
+	subq %r8, %rsi		#last--
+	andq %rsi, %rsi		#while last > 0
+	jne loop1
+
+	.pos 0x200
+stack:
+	

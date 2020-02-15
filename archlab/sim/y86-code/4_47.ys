@@ -1,0 +1,61 @@
+/*Y-86 program*/
+bubble_a:
+/* data in %rdi, count in %rsi, all the values of the registers are initially set to 0 */
+    irmovq $8, %r11
+    irmovq $1, %r13
+.loop1:
+    subq %r13, %rsi  #for (last = count - 1; last > 0; --last)
+    andq %rsi, %rsi
+    je .return
+    xorq %rdx, %rdx  #for (i = 0; i < last; ++i)
+    subq %r13, %rdx
+    rrmovq %rdi, %rbx
+.loop2:
+    addq %r13, %rdx
+    andq %rdx, %rdx  
+    cmovne %r11, %r10
+    addq %r10, %rbx  #every time after a loop of loop2, data += 1 (ie, do not add when i == 0)
+    rrmovq %rsi, %r12
+    xorq %rdx, %r12  #if i == last break
+    je .loop1
+    mrmovq (%rbx), %rax
+    mrmovq 8(%rbx), %rcx
+    rrmovq %rcx, %r8
+    subq %rax, %r8  #if *(data + i) <= *(data + i + 1) continue
+    jle .loop2
+    rmmovq %rax, 8(%rbx)
+    rmmovq %rcx, (%rbx)  #swap the value of *(data + i) and *(data + i + 1)
+    jmp loop2
+.return:
+    ret
+
+test:
+/* data in %rdi, count in %rsi, all the values of the registers are initially set to 0 */
+    irmovq $8, %r8
+    irmovq $1, %r9
+.loop1:
+    rrmovq %rdi, %rcx 
+    andq %rdx, %rdx  #for (int i = 0; i < count - 1; ++i)
+    cmovne %r8, %r10
+    addq %r10, %rdi
+    rrmovq %rdx, %rbx
+    addq %r9, %rdx  #for (int j = i + 1; j < count; ++j)
+    rrmovq %rsi, %r12
+    subq %r9, %r12
+    subq %rdx, %r12
+    je .return
+.loop2:
+    addq %r9, %rbx
+    addq %r8, %rcx
+    rrmovq %rsi, %r12
+    subq %rbx, %r12
+    je .loop1
+    mrmovq (%rdi), %r13  #if (*(data + i) > *(data + j)) return 0
+    mrmovq (%rcx), %r14
+    subq %r13, %r14
+    jg .loop2
+    irmovq $0, %rax
+    ret
+.return:
+    irmovq $1, %rax  #all tests passed, return 1
+    ret

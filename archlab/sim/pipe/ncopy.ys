@@ -1,0 +1,172 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Copy a src block of len words to dst.
+# Return the number of positive words (>0) contained in src.
+#
+# Include your name and ID here.
+# Vegetable 1800017781 1800017781
+# Describe how and why you modified the baseline code.
+# /* First, used loop rolling to optimize. */
+# /* Second, added instruction iaddq to reduce the number of irmovq. */
+# /* Third, rolled the remaining calculation, the principle is same to loop rolling. */
+# /* Fourth, adjusted the order of instructions to avoid data dependency
+#	and control dependency as much as possible. */
+##################################################################
+# Do not modify this portion
+# Function prologue.
+# %rdi = src, %rsi = dst, %rdx = len
+ncopy:
+
+##################################################################
+# You can modify this portion
+	# Loop header
+	iaddq $-8, %rdx		#put the first load in the Loop header	
+	mrmovq (%rdi), %rbx
+	jle Remain0
+Loop1:	
+	mrmovq 8(%rdi), %rbp	 #Loop rolling 9x1
+	mrmovq 16(%rdi), %r8
+	mrmovq 24(%rdi), %r9
+	mrmovq 32(%rdi), %r10
+	mrmovq 40(%rdi), %r14
+	mrmovq 48(%rdi), %r11
+	andq %rbx, %rbx
+	rmmovq %rbx, (%rsi)	#adjust the order of store instruction to make full use of the bubble, all the same below
+	jle Target11
+	iaddq $1, %rax
+Target11:
+	andq %rbp, %rbp	
+	rmmovq %rbp, 8(%rsi)
+	jle Target12
+	iaddq $1, %rax
+Target12:
+	andq %r8, %r8
+	rmmovq %r8, 16(%rsi)
+	jle Target13
+	iaddq $1, %rax
+Target13:
+	andq %r9, %r9
+	rmmovq %r9, 24(%rsi)
+	jle Target14
+	iaddq $1, %rax
+Target14:
+	andq %r10, %r10
+	rmmovq %r10, 32(%rsi)
+	jle Target15
+	iaddq $1, %rax
+Target15:
+	andq %r14, %r14
+	rmmovq %r14, 40(%rsi)
+	jle Target16
+	iaddq $1, %rax
+Target16:
+	andq %r11, %r11
+	rmmovq %r11, 48(%rsi)
+	jle Target17
+	iaddq $1, %rax
+Target17:
+	mrmovq 56(%rdi), %rbx
+	mrmovq 64(%rdi), %rbp
+	andq %rbx, %rbx
+	rmmovq %rbx, 56(%rsi)
+	jle Target18			#after testing, conditional transfer of control is better than conditional transfer of data here
+	iaddq $1, %rax
+Target18:
+	andq %rbp, %rbp	
+	rmmovq %rbp, 64(%rsi)
+	jle Target19
+	iaddq $1, %rax
+Target19:
+	iaddq $72, %rdi
+	iaddq $72, %rsi
+	iaddq $-9, %rdx
+	mrmovq (%rdi), %rbx	#put the first load at the end of the loop to make full use of the bubble
+	jg Loop1
+Remain0:			#instead of another loop, rolling them into 8 seperate parts
+	iaddq $8, %rdx		
+	jg Remain1
+	ret
+Remain1:
+	andq %rbx, %rbx
+	rmmovq %rbx, (%rsi)	#used the same optimizing strategy as the main loop
+	jle Remain11
+	iaddq $1, %rax
+Remain11:
+	iaddq $-1, %rdx
+	mrmovq 8(%rdi), %rbp
+	jg Remain2
+	ret
+Remain2:
+	andq %rbp, %rbp
+	rmmovq %rbp, 8(%rsi)
+	jle Remain22
+	iaddq $1, %rax
+Remain22:
+	iaddq $-1, %rdx
+	mrmovq 16(%rdi), %r8
+	jg Remain3
+	ret
+Remain3:
+	andq %r8, %r8
+	rmmovq %r8, 16(%rsi)
+	jle Remain33
+	iaddq $1, %rax
+Remain33:
+	iaddq $-1, %rdx
+	mrmovq 24(%rdi), %r9
+	jg Remain4
+	ret
+Remain4:
+	andq %r9, %r9
+	rmmovq %r9, 24(%rsi)
+	jle Remain44
+	iaddq $1, %rax
+Remain44:
+	iaddq $-1, %rdx
+	mrmovq 32(%rdi), %r10
+	jg Remain5
+	ret
+Remain5:
+	andq %r10, %r10
+	rmmovq %r10, 32(%rsi)
+	jle Remain55
+	iaddq $1, %rax
+Remain55:
+	iaddq $-1, %rdx
+	mrmovq 40(%rdi), %r11
+	jg Remain6
+	ret
+Remain6:
+	andq %r11, %r11
+	rmmovq %r11, 40(%rsi)
+	jle Remain66
+	iaddq $1, %rax
+Remain66:
+	iaddq $-1, %rdx
+	mrmovq 48(%rdi), %r14
+	jg Remain7
+	ret
+Remain7:
+	andq %r14, %r14
+	rmmovq %r14, 48(%rsi)
+	jle Remain77
+	iaddq $1, %rax
+Remain77:
+	iaddq $-1, %rdx
+	mrmovq 56(%rdi), %rbx
+	jg Remain8
+	ret
+Remain8:
+	andq %rbx, %rbx
+	rmmovq %rbx, 56(%rsi)
+	jle Done
+	iaddq $1, %rax
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+Done:
+	ret
+##################################################################
+# Keep the following label at the end of your function
+End:
+#/* $end ncopy-ys */
